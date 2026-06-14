@@ -6,16 +6,11 @@
 #include <vector>
 
 #include "grid/cell.h"
+#include "toolbar/toolbar.h"
 
 const int ROWS = 30;
 const int COLS = 30;
 
-enum class PlacingMode {
-    Start,
-    Goal,
-    Wall,
-    Eraser
-};
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -27,6 +22,8 @@ public:
 private:
     QWidget     *centralWidget;
     QGridLayout *gridLayout;
+    Toolbar *toolbar;
+    QVBoxLayout *mainLayout; 
 
     std::vector<std::vector<Cell*>> grid;
     PlacingMode currentMode = PlacingMode::Start;
@@ -40,5 +37,8 @@ private slots:
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
+
+signals:
+    void modeUpdated(PlacingMode mode);
 };
 

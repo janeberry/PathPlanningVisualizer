@@ -16,6 +16,9 @@ add_executable(PathplanningVisualizer
     mainwindow.h
     grid/cell.cpp
     grid/cell.h
+    toolbar/toolbar.cpp
+    toolbar/toolbar.h
+    toolbar/placingmode.h
 )
 
 target_link_libraries(PathplanningVisualizer
