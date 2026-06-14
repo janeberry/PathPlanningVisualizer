@@ -12,6 +12,7 @@ CellType Cell::getType() const {
     return type;
 }
 
+
 void Cell::setType(CellType newType) {
     type = newType;
     update(); // repaint 트리거
@@ -51,3 +52,4 @@ void Cell::enterEvent(QEnterEvent *event) {
     Q_UNUSED(event);
     emit entered(row, col);
 }
+

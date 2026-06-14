@@ -34,6 +34,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void enterEvent(QEnterEvent *event) override;
 
+
 signals:
     void pressed(int row, int col);
     void entered(int row, int col);
