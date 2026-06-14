@@ -15,6 +15,7 @@ public:
 signals:
     void modeChanged(PlacingMode mode);
     void clearRequested();
+    void runRequested();
 
 private:
     QPushButton *startBtn;

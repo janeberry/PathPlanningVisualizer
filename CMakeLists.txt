@@ -19,6 +19,8 @@ add_executable(PathplanningVisualizer
     toolbar/toolbar.cpp
     toolbar/toolbar.h
     toolbar/placingmode.h
+    algorithms/bfs.cpp
+    algorithms/bfs.h
 )
 
 target_link_libraries(PathplanningVisualizer

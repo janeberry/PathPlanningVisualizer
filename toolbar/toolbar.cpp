@@ -2,8 +2,12 @@
 
 Toolbar::Toolbar(QWidget *parent) : QWidget(parent) {
     QHBoxLayout *layout = new QHBoxLayout(this);
+    QPushButton *runBtn = new QPushButton("▶ Run", this);
+
     layout->setSpacing(8);
     layout->setContentsMargins(8, 8, 8, 8);
+    
+    
 
     startBtn  = new QPushButton("Start",  this);
     goalBtn   = new QPushButton("Goal",   this);
@@ -16,6 +20,7 @@ Toolbar::Toolbar(QWidget *parent) : QWidget(parent) {
     styleButton(wallBtn,   "#4b5563");
     styleButton(eraserBtn, "#94a3b8");
     styleButton(clearBtn,  "#374151");
+    styleButton(runBtn, "#2563eb");
 
     layout->addWidget(startBtn);
     layout->addWidget(goalBtn);
@@ -23,6 +28,7 @@ Toolbar::Toolbar(QWidget *parent) : QWidget(parent) {
     layout->addWidget(eraserBtn);
     layout->addStretch();
     layout->addWidget(clearBtn);
+    layout->addWidget(runBtn);
 
     // 시작은 Start 활성화
     setActiveButton(startBtn);
@@ -45,6 +51,9 @@ Toolbar::Toolbar(QWidget *parent) : QWidget(parent) {
     });
     connect(clearBtn,  &QPushButton::clicked, this, [this]() {
         emit clearRequested();
+    });
+    connect(runBtn, &QPushButton::clicked, this, [this]() {
+        emit runRequested();
     });
 }
 
