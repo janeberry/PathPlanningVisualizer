@@ -1,11 +1,11 @@
 #include <QApplication>
-#include <QLabel>
+#include "mainwindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    
-    QLabel label("Qt + C++ 세팅 완료!");
-    label.show();
-    
+
+    MainWindow window;
+    window.show();
+
     return app.exec();
 }
