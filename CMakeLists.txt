@@ -6,13 +6,21 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# Qt path
 set(CMAKE_PREFIX_PATH "/opt/homebrew/opt/qt")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
 add_executable(PathplanningVisualizer
     main.cpp
+    mainwindow.cpp
+    mainwindow.h
+    grid/cell.cpp
+    grid/cell.h
+    toolbar/toolbar.cpp
+    toolbar/toolbar.h
+    toolbar/placingmode.h
+    algorithms/bfs.cpp
+    algorithms/bfs.h
 )
 
 target_link_libraries(PathplanningVisualizer
