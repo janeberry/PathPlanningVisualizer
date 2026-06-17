@@ -3,7 +3,7 @@
 #include <vector>
 #include <utility>
 
-#include "grid/cell.h"
+#include "../grid/cell.h"
 
 struct BFSResult {
     std::vector<std::pair<int,int>> visitedOrder;
