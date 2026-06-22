@@ -1,11 +1,12 @@
 #include "mainwindow.h"
 #include "toolbar/toolbar.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle("Pathfinding Visualizer");
-    setFixedSize(720, 720);
+    setWindowTitle("Pathplanning Visualizer");
+    setFixedSize(900, 760);
 
     centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
@@ -16,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     toolbar = new Toolbar(this);
     mainLayout->addWidget(toolbar);
+    contentLayout = new QHBoxLayout();
+    sidebar = new AlgorithmSidebar(this);
+    contentLayout->addWidget(sidebar);
 
     QWidget *gridWidget = new QWidget(this);
     gridLayout = new QGridLayout(gridWidget);
@@ -23,8 +27,10 @@ MainWindow::MainWindow(QWidget *parent)
     gridLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(gridWidget);
 
+    mainLayout->addLayout(contentLayout);
     centralWidget->setMouseTracking(true);
     setupGrid();
+    
     connect(toolbar, &Toolbar::modeChanged, this, [this](PlacingMode mode) {
         currentMode = mode;
     });
@@ -35,9 +41,12 @@ MainWindow::MainWindow(QWidget *parent)
         currentMode = PlacingMode::Start;
     });
 
-    animTimer = new QTimer(this);
+    animTimer = new QTimer(this);    
+    connect(sidebar, &AlgorithmSidebar::algorithmChanged, this, [this](Algorithm algo) {
+        currentAlgorithm = algo;
+    });
+    connect(sidebar, &AlgorithmSidebar::runRequested, this, &MainWindow::runAlgorithmAnimation);
     connect(animTimer, &QTimer::timeout, this, &MainWindow::animationStep);
-    connect(toolbar, &Toolbar::runRequested, this, &MainWindow::runBFSAnimation);
 
 }
 
@@ -117,19 +126,32 @@ void MainWindow::clearVisualization() {
                 c->reset();
 }
 
-void MainWindow::runBFSAnimation() {
+void MainWindow::runAlgorithmAnimation() {
     clearVisualization();
 
-    BFSResult result = runBFS(grid, ROWS, COLS);
+    bool found = false;
+    std::vector<std::pair<int,int>> visited, path;
 
-    if (result.visitedOrder.empty() && !result.found) return;
+    if (currentAlgorithm == Algorithm::BFS) {
+        BFSResult result = runBFS(grid, ROWS, COLS);
+        visited = result.visitedOrder;
+        path    = result.path;
+        found   = result.found;
+    } else if (currentAlgorithm == Algorithm::AStar) {
+        AStarResult result = runAStar(grid, ROWS, COLS);
+        visited = result.visitedOrder;
+        path    = result.path;
+        found   = result.found;
+    }
+    
+    if (visited.empty() && !found) return;
 
-    visitedQueue = result.visitedOrder;
-    pathQueue    = result.path;
+    visitedQueue = visited;
+    pathQueue    = path;
     animIndex    = 0;
     isAnimatingVisited = true;
 
-    animTimer->start(15); // 15ms 마다 한 칸 — 빠르면 줄이고 느리면 늘려요
+    animTimer->start(15);
 }
 
 void MainWindow::animationStep() {
@@ -138,16 +160,16 @@ void MainWindow::animationStep() {
             auto [r, c] = visitedQueue[animIndex++];
             grid[r][c]->setType(CellType::Visited);
         } else {
-            // visited 다 그렸으면 path 시작
+            // visited done, path start
             isAnimatingVisited = false;
-            animIndex = (int)pathQueue.size() - 1; // 역순 (goal→start)
+            animIndex = (int)pathQueue.size() - 1; // (goal→start)
         }
     } else {
         if (animIndex >= 0) {
             auto [r, c] = pathQueue[animIndex--];
             grid[r][c]->setType(CellType::Path);
         } else {
-            animTimer->stop(); // 애니메이션 끝
+            animTimer->stop(); 
         }
     }
 }

@@ -8,7 +8,10 @@
 
 #include "grid/cell.h"
 #include "toolbar/toolbar.h"
+#include "toolbar/algorithmsidebar.h"
+
 #include "algorithms/bfs.h"
+#include "algorithms/astar.h"
 
 
 const int ROWS = 30;
@@ -25,8 +28,13 @@ public:
 private:
     QWidget     *centralWidget;
     QGridLayout *gridLayout;
+    
     Toolbar *toolbar;
+    AlgorithmSidebar *sidebar;
+    Algorithm currentAlgorithm = Algorithm::BFS;
+
     QVBoxLayout *mainLayout; 
+    QHBoxLayout *contentLayout;
     QTimer *animTimer;
 
     std::vector<std::vector<Cell*>> grid;
@@ -39,7 +47,7 @@ private:
     bool isAnimatingVisited = true;
 
     void setupGrid();
-    void runBFSAnimation();
+    void runAlgorithmAnimation();    
     void animationStep();
     void clearVisualization();
 
