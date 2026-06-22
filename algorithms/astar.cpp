@@ -1,10 +1,11 @@
 #include "astar.h"
+#include <queue>
 
 struct Node {
     int minRow;
     int minCol;
     int minFcost=1000;
-}
+};
 
 
 AStarResult runAStar(const std::vector<std::vector<Cell*>> &grid, int rows, int cols) {
@@ -39,7 +40,7 @@ AStarResult runAStar(const std::vector<std::vector<Cell*>> &grid, int rows, int 
     q.push(start);
 
     while (!q.empty()){
-        auto [r,c] = q.front();
+        auto [r,c] = q.top();
         q.pop();
 
         if (grid[r][c]->getType()==CellType::Empty) result.visitedOrder.push_back({r,c});
@@ -58,13 +59,12 @@ AStarResult runAStar(const std::vector<std::vector<Cell*>> &grid, int rows, int 
             if (nr<0 || nc<0 || nr>=rows || nc>=cols) continue;
             if (grid[nr][nc]->getType()==CellType::Wall) continue;
 
-            int gCost = abs(start.fist - nr) + abs(start.second - nc);
+            int gCost = abs(start.first - nr) + abs(start.second - nc);
             int hCost = abs(goal.first - nr) + abs(goal.second - nc);
 
             int fCost = gCost + hCost;
 
             if (fCost <= current.minFcost){
-                min = fCost;
                 current.minRow = nr;
                 current.minCol = nc;
                 current.minFcost = fCost;

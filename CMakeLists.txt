@@ -18,8 +18,8 @@ add_executable(PathplanningVisualizer
     grid/cell.h
     toolbar/toolbar.cpp
     toolbar/toolbar.h
-    toolbar/algorithmssidebar.cpp
-    toolbar/algorithmssidebar.h 
+    toolbar/algorithmsidebar.cpp
+    toolbar/algorithmsidebar.h 
     toolbar/placingmode.h
     algorithms/bfs.cpp
     algorithms/bfs.h

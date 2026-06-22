@@ -18,16 +18,17 @@ MainWindow::MainWindow(QWidget *parent)
     toolbar = new Toolbar(this);
     mainLayout->addWidget(toolbar);
     contentLayout = new QHBoxLayout();
-    sidebar = new AlgorithmSidebar(this);
-    contentLayout->addWidget(sidebar);
-
+    
     QWidget *gridWidget = new QWidget(this);
     gridLayout = new QGridLayout(gridWidget);
     gridLayout->setSpacing(1);
     gridLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->addWidget(gridWidget);
+    contentLayout->addWidget(gridWidget);
 
+    sidebar = new AlgorithmSidebar(this);
+    contentLayout->addWidget(sidebar);
     mainLayout->addLayout(contentLayout);
+
     centralWidget->setMouseTracking(true);
     setupGrid();
     
