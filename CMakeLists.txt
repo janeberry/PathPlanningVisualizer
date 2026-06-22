@@ -21,6 +21,8 @@ add_executable(PathplanningVisualizer
     toolbar/placingmode.h
     algorithms/bfs.cpp
     algorithms/bfs.h
+    algorithms/astar.cpp 
+    algorithms/astar.h
 )
 
 target_link_libraries(PathplanningVisualizer
