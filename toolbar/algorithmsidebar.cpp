@@ -40,7 +40,7 @@ AlgorithmSidebar::AlgorithmSidebar(QWidget *parent) : QWidget(parent) {
     layout->addStretch();
     layout->addWidget(runBtn);
 
-    setActiveButton(bfsBtn); // 기본 선택: BFS
+    setActiveButton(bfsBtn); 
 
     connect(bfsBtn, &QPushButton::clicked, this, [this]() {
         setActiveButton(bfsBtn);

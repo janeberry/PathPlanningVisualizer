@@ -139,10 +139,11 @@ void MainWindow::runAlgorithmAnimation() {
         path    = result.path;
         found   = result.found;
     } else if (currentAlgorithm == Algorithm::AStar) {
-        AStarResult result = runAStar(grid, ROWS, COLS);
+        AStarResult result = runAStar(grid, ROWS, COLS);      
         visited = result.visitedOrder;
         path    = result.path;
         found   = result.found;
+        
     }
     
     if (visited.empty() && !found) return;

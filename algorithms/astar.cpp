@@ -1,13 +1,6 @@
 #include "astar.h"
 #include <queue>
 
-struct Node {
-    int minRow;
-    int minCol;
-    int minFcost=1000;
-};
-
-
 AStarResult runAStar(const std::vector<std::vector<Cell*>> &grid, int rows, int cols) {
     AStarResult result;
 
@@ -20,27 +13,36 @@ AStarResult runAStar(const std::vector<std::vector<Cell*>> &grid, int rows, int 
             if (grid[r][c]->getType()==CellType::Goal) goal={r,c};
         }
     }
+
     if (start.first == -1 || goal.first == -1) return result;
 
     //east, west, north, south
     const int dr[4]={-1,1,0,0};
     const int dc[4]={0,0,-1,1};
 
-    //f(n) = g(n) + f(n)
-    // std::vector<std::vector<int>> gCost;
-    // std::vector<std::vector<int>> hCost;
-    
+    //gCost
+    std::vector<std::vector<int>> gCost(rows, std::vector<int>(cols, 1e9));
+    gCost[start.first][start.second] = 0;
 
+    //hCost
+    int hStart = abs(start.first - goal.first) + abs(start.second - goal.second);
+
+    //{fCost, {row, col}}
+    using QueueItem = std::pair<int, std::pair<int,int>>;
+    std::priority_queue<QueueItem, std::vector<QueueItem>, std::greater<>> q; 
+    q.push({hStart, start}); 
+    
+    //visited check
+    std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false)); //[false][false]
+    visited[start.first][start.second] = true;
+    
     //for backtracking (path)
-    std::vector<std::vector<std::pair<int,int>>> parent(rows, std::vector<std::pair<int,int>>(cols, {-1,-1})); //(-1,-1)
-
+    std::vector<std::vector<std::pair<int,int>>> parent(rows, std::vector<std::pair<int,int>>(cols, {-1,-1})); 
     
-    std::priority_queue<std::pair<int,int>> q;
-
-    q.push(start);
 
     while (!q.empty()){
-        auto [r,c] = q.top();
+        auto [fCost, position] = q.top();
+        auto [r,c] = position;
         q.pop();
 
         if (grid[r][c]->getType()==CellType::Empty) result.visitedOrder.push_back({r,c});
@@ -49,31 +51,28 @@ AStarResult runAStar(const std::vector<std::vector<Cell*>> &grid, int rows, int 
             break;
         }
 
-        //searching (find lowest F Cost)
-        Node current = {r, c, 1000};
-        
+        //searching (find lowest F Cost)        
         for (int i=0; i<4; i++){
             int nr = r + dr[i];
             int nc = c + dc[i];
 
             if (nr<0 || nc<0 || nr>=rows || nc>=cols) continue;
             if (grid[nr][nc]->getType()==CellType::Wall) continue;
+            if (visited[nr][nc]) continue;
+            
+            int newGCost = gCost[r][c] + 1; 
 
-            int gCost = abs(start.first - nr) + abs(start.second - nc);
-            int hCost = abs(goal.first - nr) + abs(goal.second - nc);
+            if (newGCost < gCost[nr][nc]) { 
+                gCost[nr][nc] = newGCost;
+                int hCost = abs(goal.first - nr) + abs(goal.second - nc);
+                int newFCost = newGCost + hCost;
 
-            int fCost = gCost + hCost;
-
-            if (fCost <= current.minFcost){
-                current.minRow = nr;
-                current.minCol = nc;
-                current.minFcost = fCost;
+                parent[nr][nc] = {r, c};
+                q.push({newFCost, {nr, nc}});
             }
+
+            visited[nr][nc]=true;
         }
-
-        parent[current.minRow][current.minCol]={r,c};
-        q.push({current.minRow, current.minCol});
-
     }
     
     if (!result.found) return result;
